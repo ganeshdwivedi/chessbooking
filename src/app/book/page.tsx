@@ -5,7 +5,7 @@ import FullCalendar from '../Component/fullCalendar';
 const MyCalendar = () => {
 
   return (
-    <div>
+    <div className='m-10'>
          <FullCalendar  />
     </div>
   );

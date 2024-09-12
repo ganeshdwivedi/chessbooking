@@ -7,10 +7,52 @@
   --foreground: #171717;
 }
 
+@font-face {
+  font-family: 'IBMRegular';
+  src: url('fonts/IBMPlexSerif-Regular.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'IBMBold';
+  src: url('fonts/IBMPlexSerif-Bold.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'IBMSemibold';
+  src: url('fonts/IBMPlexSerif-SemiBold.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'IBMMedium';
+  src: url('fonts/IBMPlexSerif-Medium.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
 @media (prefers-color-scheme: dark) {
  
 }
 
+.fc .fc-timegrid-col.fc-day-today {
+  background-color:unset;
+}
+.fc .fc-toolbar.fc-header-toolbar {
+  display: none;
+}
+.fc .fc-col-header-cell-cushion{
+padding: 20px;
+font-family: 'IBMBold';
+}
+.fc .fc-timegrid-axis-cushion, .fc .fc-timegrid-slot-label-cushion{
+  font-size: 14px;
+}
 
 @layer utilities {
   .text-balance {
