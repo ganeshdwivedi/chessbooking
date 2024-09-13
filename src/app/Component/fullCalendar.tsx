@@ -1,10 +1,12 @@
 "use client"
 import FullCalendar from '@fullcalendar/react'
-import dayGridPlugin from '@fullcalendar/daygrid'
+import {DatePicker} from "@nextui-org/date-picker";
 import interactionPlugin from '@fullcalendar/interaction'
-import resourceTimelinePlugin from '@fullcalendar/resource-timeline'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
+import { useEffect, useRef, useState } from 'react'
+import moment from 'moment';
+import DateCarousel from './DateCrousel';
 
 const courts = [
   { name: 'Table 1' },
@@ -13,6 +15,8 @@ const courts = [
 ];
 
 const fullCalendar = () => {
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const calendarRef = useRef<FullCalendar>(null);
 
   const events = courts.map((court, index) => ({
     title: court.name,
@@ -27,10 +31,31 @@ const fullCalendar = () => {
     title: court.name
   }));
 
+
+  useEffect(() => {
+    if (calendarRef.current) {
+      const calendarApi = calendarRef.current.getApi();
+
+      // Custom function to change the date
+      const changeDate = (newDate: Date) => {
+        calendarApi.gotoDate(newDate); // Use FullCalendar's API to change the date
+      };
+
+      // Example usage
+      changeDate(currentDate);
+    }
+  }, [currentDate]);
+
+  const handleDateChange = (e:any)=>{
+       console.log(e,'anyyyyy')
+  }
+
+
   return (
     <div className='calendar-container'>
+    <DateCarousel selectedDate={currentDate} setSelectedDate={setCurrentDate}/>
       <FullCalendar
-      height={'680px'}
+      ref={calendarRef}
        plugins={[resourceTimeGridPlugin, timeGridPlugin, interactionPlugin]}
        initialView="resourceTimeGridDay"
        resources={resources}
@@ -39,9 +64,11 @@ const fullCalendar = () => {
        slotMaxTime="20:00:00"
        headerToolbar={{
          left: '',
-         center: '',
+         center: 'title',
          right: ''
        }}
+       select={(event:any)=>console.log(event,'select')}
+       eventClick={(event:any)=>console.log(event,'events')}
        nowIndicator={true}
       //  editable={true}
        selectable={true}

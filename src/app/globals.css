@@ -5,6 +5,10 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --font-regular: "IBMRegular";
+  --font-medium: 'IBMMedium';
+  --font-semibold: "IBMSemibold";
+  --font-bold: "IBMBold";
 }
 
 @font-face {
@@ -39,12 +43,15 @@
 @media (prefers-color-scheme: dark) {
  
 }
+.fc-license-message{
+  display: none;
+}
 
 .fc .fc-timegrid-col.fc-day-today {
   background-color:unset;
 }
 .fc .fc-toolbar.fc-header-toolbar {
-  display: none;
+  /* display: none; */
 }
 .fc .fc-col-header-cell-cushion{
 padding: 20px;
@@ -53,6 +60,12 @@ font-family: 'IBMBold';
 .fc .fc-timegrid-axis-cushion, .fc .fc-timegrid-slot-label-cushion{
   font-size: 14px;
 }
+
+
+.shadow-btn{
+  box-shadow: 2px 4px 4px 2px rgba(0, 0, 0, 0.07);
+}
+
 
 @layer utilities {
   .text-balance {
