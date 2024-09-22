@@ -18,7 +18,7 @@ const SingleDateSel: React.FC<SingleDateSelProps> = ({ selectedDays, setSelected
         locale: localeEn,
         selectedDates: [selectedDays],
         onSelect: ({ date, formattedDate }) => {
-          setSelectedDate(date);
+          setSelectedDate(selectedDays as Date);
         },
       });
     }
