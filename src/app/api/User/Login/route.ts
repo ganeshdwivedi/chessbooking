@@ -17,11 +17,12 @@ export async function POST(request:NextRequest) {
         if (!isExist) {
             return NextResponse.json({ message: "no such user find" },{ status: 400 })
         }
-        const user:user= await User.findOne({ email: email });
+        const user:user|null= await User.findOne({ email: email });
         console.log(user);
-        const valid = await argon2.verify(user.password, password);
-        console.log(valid);
-        if (!valid) {
+        let valid;
+        if(user){
+            valid = await argon2.verify(user.password, password);
+             if (!valid) {
             console.log("error in password");
             return NextResponse.json({ error: "Invalid password" }, { status: 400 });
         }
@@ -30,6 +31,8 @@ export async function POST(request:NextRequest) {
                 user.email
             )
         },{ status: 200 });
+        }
+       
 
     } catch (error) {
         console.error(error);
