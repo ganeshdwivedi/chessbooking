@@ -13,14 +13,24 @@ const SingleDateSel: React.FC<SingleDateSelProps> = ({ selectedDays, setSelected
     const calendarRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
-        const hell = new AirDatepicker(calendarRef.current, {
-            locale: localeEn,
-            multipleDatesSeparator: " - ",
-            selectedDates: selectedDays,
-            onSelect: ({ date }:{date:Date}) => {
-                setSelectedDate(date);
-            },
-        });
+            if (calendarRef.current) {
+      const hell = new AirDatepicker(calendarRef.current, {
+        locale: localeEn,
+        multipleDatesSeparator: " - ",
+        selectedDates: selectedDays,
+        onSelect: ({ date }: { date: Date }) => {
+          setSelectedDate(date);
+        },
+      });
+    }
+        // const hell = new AirDatepicker(calendarRef.current, {
+        //     locale: localeEn,
+        //     multipleDatesSeparator: " - ",
+        //     selectedDates: selectedDays,
+        //     onSelect: ({ date }:{date:Date}) => {
+        //         setSelectedDate(date);
+        //     },
+        // });
 
         // Cleanup function to destroy the calendar instance on component unmount
         // return () => {
