@@ -17,8 +17,11 @@ const config: Config = {
         'bold': "var(--font-bold)",
       }, 
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        primary: "#C3BEF5",
+        cancel: "#dddbf8",
+        success:'#b8b4e7',
+        sidebar:'#424B96',
+        background:'#EEEFF5'
       },
     },
   },

@@ -51,14 +51,19 @@
   background-color:unset;
 }
 .fc .fc-toolbar.fc-header-toolbar {
-  /* display: none; */
+  display: none;
 }
 .fc .fc-col-header-cell-cushion{
 padding: 20px;
 font-family: 'IBMBold';
 }
 .fc .fc-timegrid-axis-cushion, .fc .fc-timegrid-slot-label-cushion{
-  font-size: 14px;
+  font-size: 13px;
+  font-family: 'IBMRegular';
+}
+.fc{
+  border-radius: 27px !important;
+  background-color: white !important;
 }
 
 
@@ -66,6 +71,41 @@ font-family: 'IBMBold';
   box-shadow: 2px 4px 4px 2px rgba(0, 0, 0, 0.07);
 }
 
+.shadow-btnInset{
+  box-shadow: 2px 4px 4px 2px rgba(0, 0, 0, 0.07) inset;
+}
+
+.fc-v-event{
+    border: 1px solid #b8b4e7;
+    display: block;
+    width: 102.5% !important;
+    border-radius: 4px !important;
+}
+
+.cancel{
+    background-color: #dddbf8 !important;
+    color: black !important;
+}
+.cancel > .fc-event-main{
+  color: black !important;
+  font-family: IBMMedium !important;
+  padding-left: 5px !important;
+}
+.success{
+  background-color: #b8b4e7 !important;
+}
+
+.fc-event{
+  background-color: #e9ebf5;
+}
+.fc-event >.fc-event-main{
+  color: black;
+}
+.success>.fc-event-main {
+  color: white !important;
+  font-family: IBMMedium !important;
+  padding-left: 5px !important;
+}
 
 @layer utilities {
   .text-balance {
