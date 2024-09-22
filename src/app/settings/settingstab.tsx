@@ -25,7 +25,30 @@ import { columns, users, statusOptions } from "./Constant";
 import { CiSearch } from "react-icons/ci";
 import { FaChevronDown } from "react-icons/fa6";
 
-const statusColorMap = {
+// Define interfaces for types
+interface Colour {
+  active: string;
+  inactive: string;
+}
+
+interface UserType {
+  id: number;
+  name: string;
+  role: string;
+  team: string;
+  status: string;
+  age: number;
+  avatar: string;
+  email: string;
+}
+
+interface ColumnType {
+  uid: string;
+  name: string;
+  sortable?: boolean;
+}
+
+const statusColorMap: Colour = {
   active: "success",
   inactive: "danger",
 };
@@ -33,24 +56,32 @@ const statusColorMap = {
 export function capitalize(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
+
+// Required columns for table rendering
 const requiredColumns = ["name", "role", "status", "actions"];
-const InitialColumns = columns.filter((column) =>
-  Array.from(requiredColumns).includes(column.uid)
+const InitialColumns = columns.filter((column: ColumnType) =>
+  requiredColumns.includes(column.uid)
 );
 
 export default function App() {
-  const [filterValue, setFilterValue] = React.useState("");
-  const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
-  const [statusFilter, setStatusFilter] = React.useState("all");
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [sortDescriptor, setSortDescriptor] = React.useState({
-    column: "age",
+  const [filterValue, setFilterValue] = React.useState<string>("");
+  const [selectedKeys, setSelectedKeys] = React.useState<Set<React.Key>>(
+    new Set()
+  );
+  const [statusFilter, setStatusFilter] = React.useState<string | "all">("all");
+  const [rowsPerPage, setRowsPerPage] = React.useState<number>(5);
+  const [sortDescriptor, setSortDescriptor] = React.useState<{
+    column: string;
+    direction: "ascending" | "descending";
+  }>({
+    column: "name",
     direction: "ascending",
   });
-  const [page, setPage] = React.useState(1);
+  const [page, setPage] = React.useState<number>(1);
 
   const hasSearchFilter = Boolean(filterValue);
 
+  // Filtering the users based on search and status
   const filteredItems = React.useMemo(() => {
     let filteredUsers = [...users];
 
@@ -59,17 +90,14 @@ export default function App() {
         user.name.toLowerCase().includes(filterValue.toLowerCase())
       );
     }
-    if (
-      statusFilter !== "all" &&
-      Array.from(statusFilter).length !== statusOptions.length
-    ) {
-      filteredUsers = filteredUsers.filter((user) =>
-        Array.from(statusFilter).includes(user.status)
+    if (statusFilter !== "all") {
+      filteredUsers = filteredUsers.filter(
+        (user) => user.status === statusFilter
       );
     }
 
     return filteredUsers;
-  }, [users, filterValue, statusFilter]);
+  }, [filterValue, statusFilter]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -81,17 +109,18 @@ export default function App() {
   }, [page, filteredItems, rowsPerPage]);
 
   const sortedItems = React.useMemo(() => {
-    return [...items].sort((a, b) => {
-      const first = a[sortDescriptor.column];
-      const second = b[sortDescriptor.column];
+    return [...items].sort((a: UserType, b: UserType) => {
+      const first = a[sortDescriptor.column as keyof UserType];
+      const second = b[sortDescriptor.column as keyof UserType];
       const cmp = first < second ? -1 : first > second ? 1 : 0;
 
       return sortDescriptor.direction === "descending" ? -cmp : cmp;
     });
   }, [sortDescriptor, items]);
 
-  const renderCell = React.useCallback((user, columnKey) => {
-    const cellValue = user[columnKey];
+  // Render cell function
+  const renderCell = React.useCallback((user: UserType, columnKey: string) => {
+    const cellValue = user[columnKey as keyof UserType];
 
     switch (columnKey) {
       case "name":
@@ -99,10 +128,8 @@ export default function App() {
           <User
             avatarProps={{ radius: "lg", src: user.avatar }}
             description={user.email}
-            name={cellValue}
-          >
-            {user.email}
-          </User>
+            name={user.name}
+          />
         );
       case "role":
         return (
@@ -117,7 +144,7 @@ export default function App() {
         return (
           <Chip
             className="capitalize"
-            color={statusColorMap[user.status]}
+            color={statusColorMap[user.status as keyof Colour]}
             size="sm"
             variant="flat"
           >
@@ -149,30 +176,26 @@ export default function App() {
     }
   }, []);
 
+  // Pagination and input handling functions
   const onNextPage = React.useCallback(() => {
-    if (page < pages) {
-      setPage(page + 1);
-    }
+    if (page < pages) setPage(page + 1);
   }, [page, pages]);
 
   const onPreviousPage = React.useCallback(() => {
-    if (page > 1) {
-      setPage(page - 1);
-    }
+    if (page > 1) setPage(page - 1);
   }, [page]);
 
-  const onRowsPerPageChange = React.useCallback((e) => {
-    setRowsPerPage(Number(e.target.value));
-    setPage(1);
-  }, []);
-
-  const onSearchChange = React.useCallback((value) => {
-    if (value) {
-      setFilterValue(value);
+  const onRowsPerPageChange = React.useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      setRowsPerPage(Number(e.target.value));
       setPage(1);
-    } else {
-      setFilterValue("");
-    }
+    },
+    []
+  );
+
+  const onSearchChange = React.useCallback((value: string) => {
+    setFilterValue(value);
+    setPage(1);
   }, []);
 
   const onClear = React.useCallback(() => {
@@ -180,6 +203,7 @@ export default function App() {
     setPage(1);
   }, []);
 
+  // Top content of the table
   const topContent = React.useMemo(() => {
     return (
       <div className="flex flex-col gap-4">
@@ -190,7 +214,7 @@ export default function App() {
             placeholder="Search by name..."
             startContent={<CiSearch />}
             value={filterValue}
-            onClear={() => onClear()}
+            onClear={onClear}
             onValueChange={onSearchChange}
           />
           <div className="flex gap-3">
@@ -208,10 +232,10 @@ export default function App() {
                 aria-label="Table Columns"
                 closeOnSelect={false}
                 selectedKeys={statusFilter}
-                selectionMode="multiple"
+                selectionMode="single"
                 onSelectionChange={setStatusFilter}
               >
-                {statusOptions.map((status) => (
+                {statusOptions.map((status: { uid: string; name: string }) => (
                   <DropdownItem key={status.uid} className="capitalize">
                     {capitalize(status.name)}
                   </DropdownItem>
@@ -230,22 +254,16 @@ export default function App() {
         </div>
       </div>
     );
-  }, [
-    filterValue,
-    statusFilter,
-    onRowsPerPageChange,
-    users.length,
-    onSearchChange,
-    hasSearchFilter,
-  ]);
+  }, [filterValue, statusFilter, users.length, onSearchChange]);
 
+  // Bottom content of the table (pagination and selection)
   const bottomContent = React.useMemo(() => {
     return (
       <div className="py-2 px-2 flex justify-between items-center">
         <span className="w-[30%] text-small text-default-400">
-          {selectedKeys === "all"
-            ? "All items selected"
-            : `${selectedKeys.size} of ${filteredItems.length} selected`}
+          {selectedKeys.size > 0
+            ? `${selectedKeys.size} of ${filteredItems.length} selected`
+            : `${filteredItems.length} total items`}
         </span>
         <Pagination
           isCompact
@@ -276,7 +294,7 @@ export default function App() {
         </div>
       </div>
     );
-  }, [selectedKeys, items.length, page, pages, hasSearchFilter]);
+  }, [selectedKeys, page, pages, filteredItems.length]);
 
   return (
     <Table
@@ -284,11 +302,6 @@ export default function App() {
       isHeaderSticky
       bottomContent={bottomContent}
       bottomContentPlacement="outside"
-      classNames={
-        {
-          // wrapper: "max-h-[382px]",
-        }
-      }
       selectedKeys={selectedKeys}
       selectionMode="multiple"
       sortDescriptor={sortDescriptor}
